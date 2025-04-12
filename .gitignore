@@ -1,0 +1,21 @@
+credentials.json
+token.json
+*token*
+# Python
+__pycache__/
+*.py[cod]
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment
+.env
+*.json
+!package.json  # allow only this JSON file
+
+# VSCode
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
