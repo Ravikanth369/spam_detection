@@ -1,0 +1,150 @@
+/* Blue-themed background and styling */
+body {
+    background: linear-gradient(to right, #010814, #2a5298);
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 30px;
+    border-radius: 10px;
+    width: 60%;
+    margin: 50px auto;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+/* Scrolling animation for heading */
+h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 3px solid white;
+    width: 100%;
+    animation: typing 4s steps(30, end) infinite, blink 0.6s step-end infinite alternate;
+}
+
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes blink {
+    50% { border-color: transparent }
+}
+
+textarea {
+    width: 90%;
+    height: 100px;
+    border-radius: 5px;
+    padding: 10px;
+    border: none;
+    font-size: 1em;
+    color: #333;
+}
+
+button {
+    background: #00bcd4;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 5px;
+}
+
+button:hover {
+    background: #040c0e;
+}
+
+#result {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    display: none;
+    color: #fff;
+}
+
+/* Styling for the email table */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    color: #fff;
+}
+
+th {
+    background: rgba(0, 188, 212, 0.8);
+}
+
+tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.spam {
+    color: red;
+    font-weight: bold;
+}
+
+.normal {
+    color: green;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2em;
+    position: relative; /* Needed for positioning the ::after */
+}
+    
+nav ul li a::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -4px; /* Adjust if needed */
+        width: 0;
+        height: 3px;
+        background-color: #ff004f;
+        transition: width 0.4s ease;
+    }
+    
+nav ul li a:hover::after {
+        width: 100%;
+    }
+    
+
+
+footer {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #ddd;
+}

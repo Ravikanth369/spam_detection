@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Spam Detection</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Intelligent Email Spam Detection</h1>
+        <p>Enter your email text below to check if it's spam.</p>
+
+        <form id="spam-form">
+            <textarea id="email_text" name="email_text" placeholder="Enter email text here..."></textarea>
+            <button type="submit">Check</button>
+        </form>
+
+        <div id="result" class="hidden">
+            <h2>Prediction: <span id="prediction"></span></h2>
+            <p>Accuracy: <span id="accuracy"></span></p>
+        </div>
+
+        <h2>📩 Search Emails by ID</h2>
+        <input type="text" id="email-id" placeholder="Enter email ID (default: your email)">
+        <button id="fetch-emails">Fetch Emails</button>
+
+        <table id="email-table">
+            <thead>
+                <tr>
+                    <th>Sender</th>
+                    <th>Subject</th>
+                    <th>Prediction</th>
+                    <th>Accuracy</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/reports">Reports</a></li>
+                <li><a href="/team">Team</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- ====== Spam Detection Analytics Section ====== -->
+    <section id="spam-analytics" style="padding: 60px 10%; background-color: #080808;">
+        <h2 style="color: #fff; text-align: center; font-size: 2.5em; margin-bottom: 30px;">📊 Spam Detection Over Time</h2>
+        <canvas id="spamOverTime" width="600" height="300" style="margin: 0 auto; display: block;"></canvas>
+    </section>
+
+    <!-- ====== Scripts ====== -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Get the canvas context
+        const ctx = document.getElementById('spamOverTime').getContext('2d');
+
+        // Initialize empty chart
+        const spamChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],  // Initially empty
+                datasets: [{
+                    label: 'Spam Messages Detected',
+                    data: [],  // Initially empty
+                    borderColor: '#ff004f',
+                    backgroundColor: 'rgba(255, 0, 79, 0.2)',
+                    tension: 0.3,
+                    fill: true,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: { color: '#fff' }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#fff' },
+                        grid: { color: '#444' }
+                    },
+                    y: {
+                        ticks: { color: '#fff' },
+                        grid: { color: '#444' },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Function to update the chart dynamically
+        function updateSpamChart(labels, data) {
+            spamChart.data.labels = labels;
+            spamChart.data.datasets[0].data = data;
+            spamChart.update();
+        }
+
+        // Fetch updated spam detection data
+        // Fetch updated spam detection data
+function fetchSpamStats() {
+    fetch(`/spam_over_time?ts=${Date.now()}`) // Prevent caching issues
+        .then(response => response.json())
+        .then(data => {
+            console.log("Fetched Spam Stats:", data); // Debugging log
+
+            if (data.labels.length > 0 && data.data.length > 0) {
+                updateSpamChart(data.labels, data.data);
+            } else {
+                console.warn("No valid data for chart.");
+            }
+        })
+        .catch(error => console.error("Error fetching spam stats:", error));
+}
+
+// Call fetchSpamStats when page loads
+fetchSpamStats();
+
+
+        // Form submission for spam prediction
+        document.getElementById("spam-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let formData = new FormData(this);
+
+            fetch("/predict", { method: "POST", body: formData })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("prediction").textContent = data.prediction;
+                document.getElementById("accuracy").textContent = data.accuracy;
+                document.getElementById("result").style.display = "block";
+            });
+        });
+
+        // Fetch Gmail emails
+        document.getElementById("fetch-emails").addEventListener("click", function() {
+            let emailId = document.getElementById("email-id").value || "me";
+
+            fetch(`/scan_emails?email=${emailId}`)
+            .then(response => response.json())
+            .then(data => {
+                let tableBody = document.querySelector("#email-table tbody");
+                tableBody.innerHTML = "";
+                data.forEach(email => {
+                    let row = `<tr>
+                        <td>${email.sender}</td>
+                        <td>${email.subject}</td>
+                        <td class="${email.prediction === 'Spam' ? 'spam' : 'normal'}">${email.prediction}</td>
+                        <td>${email.accuracy}</td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
